@@ -1,0 +1,28 @@
+import pandas as pd
+
+def run_scan(file_path):
+    # 1. فتح ملف الـ CSV
+    df = pd.read_csv(file_path)
+
+    # 2. حساب الأرقام (المال)
+    total_cost = df['Cost'].sum()
+    # لنفترض أن أي طلب فوق الـ 500 توكن هو تبذير (مثال بسيط)
+    waste_condition = df['Tokens'] > 500
+    waste_percentage = (df[waste_condition]['Cost'].sum() / total_cost) * 100
+
+    # 3. البحث عن مخاطر (Security Risks)
+    risky_keywords = ['password', 'hack', 'secret', 'key']
+    risk_count = df['Prompt'].str.contains('|'.join(risky_keywords), case=False).sum()
+
+    # 4. طباعة النتيجة
+    print("-" * 30)
+    print(f"📊 SCAN RESULTS:")
+    print("-" * 30)
+    print(f"💰 Total Cost: ${total_cost:.4f}")
+    print(f"📉 Potential Waste: {waste_percentage:.1f}%")
+    print(f"⚠️ Security Risk Count: {risk_count} found")
+    print("-" * 30)
+
+if __name__ == "__main__":
+    # تأكد أن اسم الملف يطابق ملف الـ CSV لديك
+    run_scan('sample.csv')
